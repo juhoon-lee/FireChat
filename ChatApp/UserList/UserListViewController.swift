@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
 import FirebaseDatabase
 
 class UserListViewController: UIViewController {
@@ -36,16 +38,36 @@ class UserListViewController: UIViewController {
         
         ref.child("users").observe(DataEventType.value) { snapshot in
 
-            print("스냅샷\(snapshot.value)")
+//            print("스냅샷\(snapshot.value)")
             guard let snapData = snapshot.value as? [String: Any] else {return}
-            print("스냅샷 데이터 \(snapData)")
+//            print("스냅샷 데이터 \(snapData)")
             
             let data = try! JSONSerialization.data(withJSONObject: snapData, options: .prettyPrinted)
             let jsonData = try! JSONDecoder().decode([String: UserData].self, from: data )
-            print(jsonData)
-            print(jsonData["OemHmjurrYbzQU2og9QwBoeR8Iv1"]?.nickName)
+//            print(jsonData.keys)
+//            print(jsonData.values)
+            
+            // 유저 닉네임 순으로 정렬
+            let sortedData = jsonData.sorted{ $0.value.nickName > $1.value.nickName }
+            
+            print(sortedData)
+            for i in 0..<sortedData.count {
+                let user = User(uuid: sortedData[i].key,
+                                email: sortedData[i].value.email,
+                                nickName: sortedData[i].value.nickName )
+
+                // 목록에 자신을 제외하고 표시하기 위함.
+                if user.uuid != Auth.auth().currentUser?.uid {
+                    self.users.append(user)
+                }
+            }
+            
+            
+            DispatchQueue.main.async {
+                self.UserTableView.reloadData()
+            }
+//            users = jsonData
         }
-        
     }
 }
 
@@ -76,6 +98,5 @@ extension UserListViewController: UITableViewDelegate {
         guard let chatController = self.storyboard?.instantiateViewController(withIdentifier: "ChatingController")  else {return}
         
         self.navigationController?.pushViewController(chatController, animated: true)
-        
     }
 }

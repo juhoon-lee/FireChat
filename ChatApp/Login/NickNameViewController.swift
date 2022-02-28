@@ -27,6 +27,10 @@ class NickNameViewController: UIViewController {
     }
     let user = Auth.auth().currentUser
     
+    @IBAction func tapNicknameButton(_ sender: UIButton) {
+        setNickName()
+    }
+    
     func setNickName() {
         guard let nickName = nickNameTextField.text else {
             nickNameTextField.placeholder = "채워주세요~"
@@ -44,7 +48,7 @@ class NickNameViewController: UIViewController {
         // tapBarController로 전환.
         let vcName = self.storyboard?.instantiateViewController(withIdentifier: "LoginTapBarController")
         vcName?.modalPresentationStyle = .fullScreen
-        vcName?.modalTransitionStyle = .partialCurl // 전환 애니메이션(fullScreen일 때에만 가능한듯)
+        vcName?.modalTransitionStyle = .coverVertical // 전환 애니메이션(fullScreen일 때에만 가능한듯)
         self.present(vcName!, animated: true, completion: nil)
     }
 }

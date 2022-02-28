@@ -12,7 +12,7 @@ class UserListTableViewCell: UITableViewCell{
     @IBOutlet weak var nickNameLabel: UILabel!
     
     func setUp(user: User) {
-//        nickNameLabel.text = user.nickName
+        nickNameLabel.text = user.nickName
         
         self.accessoryType = .disclosureIndicator // 오른쪽 화살표
         self.selectionStyle = .none // 클릭시 회색으로 되지 않음

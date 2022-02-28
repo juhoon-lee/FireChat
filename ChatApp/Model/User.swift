@@ -7,13 +7,14 @@
 
 import Foundation
 
-
-struct User: Codable {
+// 데이터 저장용
+struct User {
     var uuid: String
-    var myChat: Bool
-    var userData: UserData
+    var email: String
+    var nickName: String
 }
 
+// 디코딩용
 struct UserData: Codable {
     var email: String
     var nickName: String
