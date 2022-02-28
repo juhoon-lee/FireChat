@@ -48,7 +48,7 @@ class UserListViewController: UIViewController {
 //            print(jsonData.values)
             
             // 유저 닉네임 순으로 정렬
-            let sortedData = jsonData.sorted{ $0.value.nickName > $1.value.nickName }
+            let sortedData = jsonData.sorted{ $0.value.nickName < $1.value.nickName }
             
             print(sortedData)
             for i in 0..<sortedData.count {
@@ -95,7 +95,9 @@ extension UserListViewController: UITableViewDataSource {
 extension UserListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        guard let chatController = self.storyboard?.instantiateViewController(withIdentifier: "ChatingController")  else {return}
+        guard let chatController = self.storyboard?.instantiateViewController(withIdentifier: "ChatingController") as? ChatingController else {return}
+        chatController.myUID = Auth.auth().currentUser?.uid
+        chatController.opponentUID = users[indexPath.row].uuid
         
         self.navigationController?.pushViewController(chatController, animated: true)
     }

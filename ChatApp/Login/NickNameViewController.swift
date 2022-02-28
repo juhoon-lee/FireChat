@@ -21,25 +21,28 @@ class NickNameViewController: UIViewController {
         super.viewDidLoad()
         nickNameTextField.delegate = self
         setNickNameButton.layer.cornerRadius = setNickNameButton.frame.height / 2
-        
-        nickNameTextField.text = Auth.auth().currentUser?.displayName
-        
     }
-    let user = Auth.auth().currentUser
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        nickNameTextField.text = Auth.auth().currentUser?.displayName
+    }
+    
     
     @IBAction func tapNicknameButton(_ sender: UIButton) {
         setNickName()
     }
     
     func setNickName() {
+        guard let user = Auth.auth().currentUser else {return}
         guard let nickName = nickNameTextField.text else {
             nickNameTextField.placeholder = "채워주세요~"
             return
         }
-        let changeRequrest = Auth.auth().currentUser?.createProfileChangeRequest()
-        changeRequrest?.displayName = nickName
-        guard let uid = user?.uid else {return}
-        let email = user?.email
+        guard let changeRequrest = Auth.auth().currentUser?.createProfileChangeRequest() else {return}
+        changeRequrest.displayName = nickName
+        let uid = user.uid 
+        let email = user.email
         // 데이터베이스에 사용자 추가 코드 작성.
         self.ref.child("users/\(String(describing: uid))").setValue(["nickName": nickName, "email":email])
         

@@ -7,12 +7,25 @@
 
 import UIKit
 import Foundation
+import Firebase
+import FirebaseAuth
+import FirebaseDatabase
 
 class ChatingController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var textField: UITextField!
     
-    var talks: [Talk] = [Talk(talk: "안녕하세요", uuid: "1"),Talk(talk: "네 안녕하세요", uuid: "2")]
+    var talks: [Talk] = []
+    
+    var ref = Database.database().reference()
+    
+    // 나와 상대의 uid
+    var myUID: String?
+    var opponentUID: String?
+    // 나와 상대의 닉네임
+    var myNIckName: String?
+    var oppentNickName: String?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +41,8 @@ class ChatingController: UIViewController, UITextFieldDelegate {
                                                name: UIResponder.keyboardWillChangeFrameNotification,
                                                object: nil)
     }
-        
+    
+    
     // 키보드 올라가는 이벤트
     @objc func keyboardNotification(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
@@ -70,6 +84,60 @@ class ChatingController: UIViewController, UITextFieldDelegate {
         let rightCell = UINib(nibName: "RightChatWindowTableViewCell", bundle: Bundle.main)
         chatTableView.register(rightCell, forCellReuseIdentifier: "RightChatWindowTableViewCell")
         
+        
+        guard let myUID = myUID, let opponentUID = opponentUID else {return}
+        
+                
+        // 닉네임 가져오기
+        ref.child("users/\(myUID)/nickName").observe(DataEventType.value) { snapshot in
+            self.myNIckName  = snapshot.value as? String ?? "Unknown";
+        }
+        
+        ref.child("users/\(opponentUID)/nickName").observe(DataEventType.value) { snapshot in
+            self.oppentNickName  = snapshot.value as? String ?? "Unknown";
+        }
+        
+        // 대화 옵저버 달기
+        
+        ref.child("chats/\(myUID)/\(opponentUID)").observe(DataEventType.value) { snapshot in
+            guard let snapData = snapshot.value as? [String: Any] else {return}
+
+            let jsonData = try! JSONSerialization.data(withJSONObject: snapData, options: .prettyPrinted)
+            let data = try! JSONDecoder().decode([String: Talk].self, from: jsonData )
+                            
+            let sortedData = data.sorted{ $0.value.time < $1.value.time}
+            
+            var tempTalk: [Talk] = []
+            for i in 0..<sortedData.count {
+                tempTalk.append(Talk(talk: sortedData[i].value.talk, uuid: sortedData[i].value.uuid, time: sortedData[i].value.time))
+                self.talks = tempTalk
+            }
+            
+            DispatchQueue.main.async {
+                self.chatTableView.reloadData()
+            }
+        }
+        
+        
+        
+    }
+    
+    // 데이터베이스에 채팅 추가
+    func sendData() {
+        guard let myUID = myUID, let opponentUID = opponentUID else {return}
+        if textField.text != nil {
+            let text = textField.text
+            
+            // firebase Key 에는 .이 못 들어간다..
+            let time = String(Date().timeIntervalSince1970)
+            self.ref.child("chats/\(myUID)/\(opponentUID)/\(UUID().uuidString)").setValue(
+                ["talk":text, "uuid":myUID, "time": time]
+            )
+            self.ref.child("chats/\(opponentUID)/\(myUID)/\(UUID().uuidString)").setValue(
+                ["talk":text, "uuid":myUID, "time": time]
+            )
+            textField.text = ""
+        }
     }
     
     deinit {
@@ -85,18 +153,20 @@ extension ChatingController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        guard let meUID = myUID, let opponentUID = opponentUID else {return UITableViewCell()}
+
         switch talks[indexPath.row].uuid {
-        case "1":
+        case opponentUID:
             guard let cell = chatTableView.dequeueReusableCell(withIdentifier: "LeftChatWindowTableViewCell", for: indexPath) as? LeftChatWindowTableViewCell else {return UITableViewCell()}
-            cell.userNameLabel.text = talks[indexPath.row].uuid
+            cell.userNameLabel.text = oppentNickName
             cell.leftTalkLabel.text = talks[indexPath.row].talk
             cell.backgroundColor = .red
             
             return cell
-        case "2":
+        case meUID:
             guard let cell = chatTableView.dequeueReusableCell(withIdentifier: "RightChatWindowTableViewCell", for: indexPath) as? RightChatWindowTableViewCell else {return UITableViewCell()}
             
-            cell.userNameLabel.text = talks[indexPath.row].uuid
+            cell.userNameLabel.text = myNIckName
             cell.rightTalkLabel.text = talks[indexPath.row].talk
             cell.backgroundColor = .blue
             
@@ -108,7 +178,7 @@ extension ChatingController: UITableViewDataSource {
 }
 
 extension ChatingController: UITableViewDelegate {
-
+    
 }
 
 
@@ -116,19 +186,21 @@ extension ChatingController: UITableViewDelegate {
 extension ChatingController: UITextViewDelegate {
     
     // 텍스트필드 편집이 시작되었을 때
-//    func textFieldDidBeginEditing(_ textField: UITextField) {
-//    }
+    //    func textFieldDidBeginEditing(_ textField: UITextField) {
+    //    }
     
     // 리턴버튼이 눌렸을 때
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
+        // 데이터베이스에 채팅 내용 구현
         self.view.endEditing(true)
-        
         return false
     }
     
     // 텍스트필드 편집이 끝났을 때
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        // 데이터베이스에 채팅 내용 구현
+        sendData()
+    }
     
 }

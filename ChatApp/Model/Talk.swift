@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Talk {
+struct Talk: Codable {
     let talk: String
     let uuid: String
+    let time: String
 }
