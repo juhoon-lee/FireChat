@@ -14,6 +14,8 @@ import FirebaseDatabase
 class ChatingController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var sendStackView: UIStackView!
     
     var talks: [Talk] = []
     
@@ -32,40 +34,41 @@ class ChatingController: UIViewController, UITextFieldDelegate {
         
         Settings()
         
+        // tableview의 터치 이벤트 추가
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:))))
+        
         //        navigationController?.isNavigationBarHidden = false // 네비게이션 바 숨기기
-        navigationItem.title = "대화방 이름" // TODO 상대방 닉네임 설정할 예정
+        navigationItem.title = oppentNickName
         
         // 키보드가 나올때 View를 올려버리는 것을 observing
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.keyboardNotification(notification:)),
-                                               name: UIResponder.keyboardWillChangeFrameNotification,
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.keyboardHideNotification(notification:)),
+                                               name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
     
+    // 터치가 발생할때 핸들러 캐치
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+        textField.resignFirstResponder()
+    }
     
     // 키보드 올라가는 이벤트
     @objc func keyboardNotification(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-        
-        let endFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-        let endFrameY = endFrame?.origin.y ?? 0
-        let duration:TimeInterval = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
-        let animationCurveRawNSN = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber
-        let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIView.AnimationOptions.curveEaseInOut.rawValue
-        let animationCurve:UIView.AnimationOptions = UIView.AnimationOptions(rawValue: animationCurveRaw)
-        
-        if endFrameY >= UIScreen.main.bounds.size.height {
-            self.view?.frame.origin.y = 0.0
-        } else {
-            self.view?.frame.origin.y -= endFrame?.size.height ?? 0.0
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            
+            self.sendStackView.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height + 35)
         }
-        
-        UIView.animate(
-            withDuration: duration,
-            delay: TimeInterval(0),
-            options: animationCurve,
-            animations: { self.view.layoutIfNeeded() },
-            completion: nil)
+    }
+    
+    // 키보드 내려가는 이벤트
+    @objc func keyboardHideNotification(notification: NSNotification) {
+   
+        self.sendStackView.transform = CGAffineTransform(translationX: 0, y: 0 )
     }
     
     func Settings() {
@@ -84,10 +87,15 @@ class ChatingController: UIViewController, UITextFieldDelegate {
         let rightCell = UINib(nibName: "RightChatWindowTableViewCell", bundle: Bundle.main)
         chatTableView.register(rightCell, forCellReuseIdentifier: "RightChatWindowTableViewCell")
         
+        // 텍스트 필드와 버튼 보이게
+        textField.layer.borderWidth = 3
+        textField.layer.borderColor = UIColor.black.cgColor
+        sendButton.layer.borderWidth = 3
+        sendButton.layer.borderColor = UIColor.black.cgColor
         
         guard let myUID = myUID, let opponentUID = opponentUID else {return}
         
-                
+        
         // 닉네임 가져오기
         ref.child("users/\(myUID)/nickName").observe(DataEventType.value) { snapshot in
             self.myNIckName  = snapshot.value as? String ?? "Unknown";
@@ -95,16 +103,17 @@ class ChatingController: UIViewController, UITextFieldDelegate {
         
         ref.child("users/\(opponentUID)/nickName").observe(DataEventType.value) { snapshot in
             self.oppentNickName  = snapshot.value as? String ?? "Unknown";
+            self.navigationItem.title = self.oppentNickName
         }
         
         // 대화 옵저버 달기
         
         ref.child("chats/\(myUID)/\(opponentUID)").observe(DataEventType.value) { snapshot in
             guard let snapData = snapshot.value as? [String: Any] else {return}
-
+            
             let jsonData = try! JSONSerialization.data(withJSONObject: snapData, options: .prettyPrinted)
             let data = try! JSONDecoder().decode([String: Talk].self, from: jsonData )
-                            
+            
             let sortedData = data.sorted{ $0.value.time < $1.value.time}
             
             var tempTalk: [Talk] = []
@@ -113,22 +122,25 @@ class ChatingController: UIViewController, UITextFieldDelegate {
                 self.talks = tempTalk
             }
             
+            // 데이터 reload + 마지막으로 스크롤
+            let endindex = IndexPath(row: self.talks.count - 1, section: 0)
+            
             DispatchQueue.main.async {
                 self.chatTableView.reloadData()
+                self.chatTableView.scrollToRow(at: endindex, at: .bottom, animated: false)
             }
+            
         }
-        
-        
         
     }
     
     // 데이터베이스에 채팅 추가
     func sendData() {
         guard let myUID = myUID, let opponentUID = opponentUID else {return}
-        if textField.text != nil {
+        if !(textField.text?.isEmpty ?? true) {
             let text = textField.text
             
-            // firebase Key 에는 .이 못 들어간다..
+            // firebase Key 에는 "."이 못 들어간다..
             let time = String(Date().timeIntervalSince1970)
             self.ref.child("chats/\(myUID)/\(opponentUID)/\(UUID().uuidString)").setValue(
                 ["talk":text, "uuid":myUID, "time": time]
@@ -137,10 +149,17 @@ class ChatingController: UIViewController, UITextFieldDelegate {
                 ["talk":text, "uuid":myUID, "time": time]
             )
             textField.text = ""
+            self.view.endEditing(true)
         }
     }
     
-    deinit {
+    
+    @IBAction func tapSendButton(_ sender: UIButton) {
+        sendData()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
     }
 }
@@ -154,13 +173,13 @@ extension ChatingController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let meUID = myUID, let opponentUID = opponentUID else {return UITableViewCell()}
-
+        
         switch talks[indexPath.row].uuid {
         case opponentUID:
             guard let cell = chatTableView.dequeueReusableCell(withIdentifier: "LeftChatWindowTableViewCell", for: indexPath) as? LeftChatWindowTableViewCell else {return UITableViewCell()}
             cell.userNameLabel.text = oppentNickName
             cell.leftTalkLabel.text = talks[indexPath.row].talk
-            cell.backgroundColor = .red
+//            cell.backgroundColor = .red
             
             return cell
         case meUID:
@@ -168,7 +187,7 @@ extension ChatingController: UITableViewDataSource {
             
             cell.userNameLabel.text = myNIckName
             cell.rightTalkLabel.text = talks[indexPath.row].talk
-            cell.backgroundColor = .blue
+//            cell.backgroundColor = .blue
             
             return cell
         default:
@@ -193,14 +212,7 @@ extension ChatingController: UITextViewDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         // 데이터베이스에 채팅 내용 구현
-        self.view.endEditing(true)
+        sendData()
         return false
     }
-    
-    // 텍스트필드 편집이 끝났을 때
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        // 데이터베이스에 채팅 내용 구현
-        sendData()
-    }
-    
 }

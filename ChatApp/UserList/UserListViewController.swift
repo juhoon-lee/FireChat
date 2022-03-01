@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 import FirebaseAuth
 import FirebaseDatabase
+import GoogleSignIn
 
 class UserListViewController: UIViewController {
     
@@ -68,6 +69,17 @@ class UserListViewController: UIViewController {
             }
 //            users = jsonData
         }
+    }
+    
+    @IBAction func tapLogoutButton(_ sender: UIBarButtonItem) {
+        GIDSignIn.sharedInstance.signOut()
+        
+        let vcName = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController")
+        vcName?.modalPresentationStyle = .fullScreen
+        vcName?.modalTransitionStyle = .flipHorizontal
+        // 전환 애니메이션(fullScreen일 때에만 가능한듯)
+        self.present(vcName!, animated: true, completion: nil)
+        
     }
 }
 

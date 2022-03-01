@@ -28,6 +28,9 @@ class NickNameViewController: UIViewController {
         nickNameTextField.text = Auth.auth().currentUser?.displayName
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
     
     @IBAction func tapNicknameButton(_ sender: UIButton) {
         setNickName()
@@ -41,17 +44,16 @@ class NickNameViewController: UIViewController {
         }
         guard let changeRequrest = Auth.auth().currentUser?.createProfileChangeRequest() else {return}
         changeRequrest.displayName = nickName
-        let uid = user.uid 
+        let uid = user.uid
         let email = user.email
         // 데이터베이스에 사용자 추가 코드 작성.
         self.ref.child("users/\(String(describing: uid))").setValue(["nickName": nickName, "email":email])
         
-        //------------------------------------------
         
         // tapBarController로 전환.
         let vcName = self.storyboard?.instantiateViewController(withIdentifier: "LoginTapBarController")
         vcName?.modalPresentationStyle = .fullScreen
-        vcName?.modalTransitionStyle = .coverVertical // 전환 애니메이션(fullScreen일 때에만 가능한듯)
+        vcName?.modalTransitionStyle = .flipHorizontal // 전환 애니메이션(fullScreen일 때에만 가능한듯)
         self.present(vcName!, animated: true, completion: nil)
     }
 }

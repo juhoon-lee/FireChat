@@ -12,6 +12,7 @@
 		6A2E0C3227C77C7F00B98D0D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E0C3127C77C7F00B98D0D /* LoginViewController.swift */; };
 		6A2E0C3527CB655500B98D0D /* NickNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E0C3427CB655500B98D0D /* NickNameViewController.swift */; };
 		6A2E0C3727CB9E2100B98D0D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A2E0C3627CB9E2100B98D0D /* GoogleService-Info.plist */; };
+		6A3C547B27CE30640062115C /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3C547A27CE30640062115C /* PaddingLabel.swift */; };
 		6A69DAB827C74F210086DF26 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A69DAB727C74F210086DF26 /* User.swift */; };
 		6A69DABE27C756500086DF26 /* UserListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A69DABC27C756500086DF26 /* UserListTableViewCell.swift */; };
 		6A69DABF27C756500086DF26 /* UserListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6A69DABD27C756500086DF26 /* UserListTableViewCell.xib */; };
@@ -37,6 +38,7 @@
 		6A2E0C3127C77C7F00B98D0D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		6A2E0C3427CB655500B98D0D /* NickNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NickNameViewController.swift; sourceTree = "<group>"; };
 		6A2E0C3627CB9E2100B98D0D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		6A3C547A27CE30640062115C /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		6A69DAB727C74F210086DF26 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		6A69DABC27C756500086DF26 /* UserListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListTableViewCell.swift; sourceTree = "<group>"; };
 		6A69DABD27C756500086DF26 /* UserListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserListTableViewCell.xib; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 				6ADDA94527C748D50037922B /* MyChat */,
 				6ADDA94C27C7493A0037922B /* ChatWindow */,
 				6A69DAB927C74F270086DF26 /* Model */,
+				6A3C547A27CE30640062115C /* PaddingLabel.swift */,
 			);
 			path = ChatApp;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				6ADDA92727C73D7F0037922B /* AppDelegate.swift in Sources */,
 				6ADDA94A27C749340037922B /* LeftChatWindowTableViewCell.swift in Sources */,
 				6ADDA94027C748B80037922B /* MyChatViewController.swift in Sources */,
+				6A3C547B27CE30640062115C /* PaddingLabel.swift in Sources */,
 				6ADDA94727C749080037922B /* ChatingController.swift in Sources */,
 				6ADDA92927C73D7F0037922B /* SceneDelegate.swift in Sources */,
 				6A69DAB827C74F210086DF26 /* User.swift in Sources */,

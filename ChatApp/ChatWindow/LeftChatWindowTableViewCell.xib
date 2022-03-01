@@ -22,11 +22,26 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFV-TU-alg">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFV-TU-alg" customClass="PaddingLabel" customModule="ChatApp" customModuleProvider="target">
                         <rect key="frame" x="5" y="28" width="165" height="67"/>
+                        <color key="backgroundColor" red="0.792156862745098" green="0.90196078431372551" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="topPadding">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="leftPadding">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="bottomPadding">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="rightPadding">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </label>
                 </subviews>
                 <constraints>
@@ -34,7 +49,7 @@
                     <constraint firstAttribute="bottom" secondItem="gFV-TU-alg" secondAttribute="bottom" constant="5" id="OV8-Ya-wCh"/>
                     <constraint firstItem="gFV-TU-alg" firstAttribute="top" secondItem="27P-I0-Xev" secondAttribute="bottom" constant="5" id="gP3-Dh-swD"/>
                     <constraint firstAttribute="trailing" secondItem="27P-I0-Xev" secondAttribute="trailing" constant="5" id="n7d-PL-MvK"/>
-                    <constraint firstAttribute="trailing" secondItem="gFV-TU-alg" secondAttribute="trailing" constant="150" id="ohg-aW-Hjy"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gFV-TU-alg" secondAttribute="trailing" constant="150" id="ohg-aW-Hjy"/>
                     <constraint firstItem="27P-I0-Xev" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="xel-I8-JJR"/>
                     <constraint firstItem="gFV-TU-alg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="xjf-4l-uBP"/>
                 </constraints>
@@ -47,4 +62,9 @@
             <point key="canvasLocation" x="139" y="110"/>
         </tableViewCell>
     </objects>
+    <designables>
+        <designable name="gFV-TU-alg">
+            <size key="intrinsicContentSize" width="356.5" height="37"/>
+        </designable>
+    </designables>
 </document>

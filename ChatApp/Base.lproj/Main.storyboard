@@ -34,6 +34,12 @@
                     <tabBarItem key="tabBarItem" title="사용자 목록" image="list.bullet.circle" catalog="system" selectedImage="list.bullet.circle.fill" id="fkj-wq-4uE"/>
                     <navigationItem key="navigationItem" title="사용자 목록" id="Wow-t7-QHc">
                         <barButtonItem key="backBarButtonItem" title="사용자 목록" id="8vf-op-6Z4"/>
+                        <barButtonItem key="rightBarButtonItem" title="로그아웃" id="vZd-jL-slE">
+                            <color key="tintColor" systemColor="systemPinkColor"/>
+                            <connections>
+                                <action selector="tapLogoutButton:" destination="20H-4F-kSW" id="9zW-3t-sN7"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="UserTableView" destination="Nuy-Co-FyQ" id="sRH-gC-guO"/>
@@ -63,7 +69,7 @@
         <!--Navigation Controller-->
         <scene sceneID="slk-W3-2xV">
             <objects>
-                <navigationController id="3xM-Tw-1xi" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="LoginViewController" id="3xM-Tw-1xi" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="KXv-nm-AeP">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -201,10 +207,10 @@
             </objects>
             <point key="canvasLocation" x="-2139.130434782609" y="-250.44642857142856"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Login Tap Bar Controller-->
         <scene sceneID="zQQ-55-eZp">
             <objects>
-                <tabBarController storyboardIdentifier="LoginTapBarController" id="h7x-XI-q6z" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="LoginTapBarController" id="h7x-XI-q6z" customClass="LoginTapBarController" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="5qh-pz-Ohq">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -228,7 +234,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="EXr-u0-kHZ">
-                                <rect key="frame" x="0.0" y="112" width="414" height="701"/>
+                                <rect key="frame" x="0.0" y="112" width="414" height="652"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -241,7 +247,16 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="EXr-u0-kHZ" secondAttribute="trailing" id="h0t-qx-o4s"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="나의 채팅" id="K22-kN-gG7"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="나의 채팅" id="K22-kN-gG7">
+                        <barButtonItem key="rightBarButtonItem" title="로그아웃" id="nPa-3y-0l5">
+                            <color key="tintColor" systemColor="systemPinkColor"/>
+                            <connections>
+                                <action selector="tapLogoutButton:" destination="BYZ-38-t0r" id="PN1-Jd-wA0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="myChatTableView" destination="EXr-u0-kHZ" id="tZH-m2-k0t"/>
                     </connections>
@@ -258,33 +273,55 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k6E-jg-6Pg">
-                                <rect key="frame" x="0.0" y="68" width="414" height="734"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k6E-jg-6Pg">
+                                <rect key="frame" x="0.0" y="68" width="414" height="744"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GpP-73-dht">
-                                <rect key="frame" x="0.0" y="802" width="414" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="MaS-rz-4do"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MEz-Do-eg5">
+                                <rect key="frame" x="0.0" y="812" width="414" height="50"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GpP-73-dht">
+                                        <rect key="frame" x="0.0" y="0.0" width="344.5" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="MaS-rz-4do"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="500" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oPJ-hR-1Nk">
+                                        <rect key="frame" x="344.5" y="0.0" width="69.5" height="50"/>
+                                        <color key="backgroundColor" red="1" green="0.89556994950000002" blue="0.67847115759999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="eLa-sq-AeX"/>
+                                        </constraints>
+                                        <color key="tintColor" systemColor="systemIndigoColor"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Send">
+                                            <fontDescription key="titleFontDescription" type="system" pointSize="20"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="tapSendButton:" destination="EZb-VQ-G5u" eventType="touchUpInside" id="XXR-hE-Fs5"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="GcK-ri-AzZ"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="GpP-73-dht" firstAttribute="top" secondItem="k6E-jg-6Pg" secondAttribute="bottom" id="B1e-Et-Ctp"/>
-                            <constraint firstItem="GpP-73-dht" firstAttribute="leading" secondItem="GcK-ri-AzZ" secondAttribute="leading" id="Nin-xP-rtA"/>
-                            <constraint firstItem="GcK-ri-AzZ" firstAttribute="bottom" secondItem="GpP-73-dht" secondAttribute="bottom" constant="10" id="QnD-5z-Wm8"/>
-                            <constraint firstItem="GcK-ri-AzZ" firstAttribute="trailing" secondItem="GpP-73-dht" secondAttribute="trailing" id="iMC-to-XGT"/>
+                            <constraint firstItem="GcK-ri-AzZ" firstAttribute="bottom" secondItem="MEz-Do-eg5" secondAttribute="bottom" id="INM-ty-MUJ"/>
+                            <constraint firstItem="GcK-ri-AzZ" firstAttribute="trailing" secondItem="MEz-Do-eg5" secondAttribute="trailing" id="WZE-Pt-OcK"/>
+                            <constraint firstItem="MEz-Do-eg5" firstAttribute="top" secondItem="k6E-jg-6Pg" secondAttribute="bottom" id="jKb-Ev-b9U"/>
                             <constraint firstItem="k6E-jg-6Pg" firstAttribute="top" secondItem="GcK-ri-AzZ" secondAttribute="top" constant="24" id="oST-mR-Qa3"/>
                             <constraint firstItem="GcK-ri-AzZ" firstAttribute="trailing" secondItem="k6E-jg-6Pg" secondAttribute="trailing" id="qel-9u-Adk"/>
                             <constraint firstItem="k6E-jg-6Pg" firstAttribute="leading" secondItem="GcK-ri-AzZ" secondAttribute="leading" id="t6C-xm-oUP"/>
+                            <constraint firstItem="MEz-Do-eg5" firstAttribute="leading" secondItem="GcK-ri-AzZ" secondAttribute="leading" id="yAV-ip-2AS"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="chatTableView" destination="k6E-jg-6Pg" id="YRE-KI-Dk4"/>
+                        <outlet property="sendButton" destination="oPJ-hR-1Nk" id="PfZ-Vf-QsG"/>
+                        <outlet property="sendStackView" destination="MEz-Do-eg5" id="4FI-WR-WIo"/>
                         <outlet property="textField" destination="GpP-73-dht" id="yco-Bs-gCC"/>
                     </connections>
                 </viewController>
@@ -328,8 +365,14 @@
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
+        <systemColor name="systemIndigoColor">
+            <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemPinkColor">
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

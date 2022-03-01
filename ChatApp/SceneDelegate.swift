@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -13,9 +14,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+       
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            guard let windowScene = (scene as? UIWindowScene) else { return }
+            self.window = UIWindow(windowScene: windowScene)
+            
+            if error != nil || user == nil {
+                // Show the app's signed-out state.
+                print("로그인 실패")
+                
+                guard  let vcName = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as? UINavigationController else {return}
+                self.window?.rootViewController = vcName
+                self.window?.makeKeyAndVisible()
+                
+            } else {
+                // Show the app's signed-in state.
+                print("로그인")
+                
+                // tapBarController로 전환.
+                guard  let vcName = storyboard.instantiateViewController(withIdentifier: "LoginTapBarController") as? UITabBarController else {return}
+                self.window?.rootViewController = vcName
+                self.window?.makeKeyAndVisible()
+            }
+        }
+        
+        
+        
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
